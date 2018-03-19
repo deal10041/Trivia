@@ -1,9 +1,6 @@
 package com.gmail.deal10041.trivia;
 
 import android.content.Context;
-import android.util.Base64;
-import android.util.JsonReader;
-import android.util.Log;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -69,6 +66,7 @@ public class TriviaHelper implements Response.Listener<JSONObject>, Response.Err
             question.setQuestion(convertString(jsonObject.getString("question")));
             question.setCorrectAnswer(convertString(jsonObject.getString("correct_answer")));
             question.setType(jsonObject.getString("type"));
+            question.setDifficulty(jsonObject.getString("difficulty"));
 
             // get all answers
             ArrayList<String> answers = new ArrayList<>();
@@ -81,7 +79,7 @@ public class TriviaHelper implements Response.Listener<JSONObject>, Response.Err
             question.setAnswers(answers);
 
 
-        } catch (JSONException e) { System.err.println(e); }
+        } catch (JSONException e) { delegate.gotError(e.getMessage()); }
 
         delegate.gotQuestion(question);
     }
@@ -93,7 +91,7 @@ public class TriviaHelper implements Response.Listener<JSONObject>, Response.Err
             decodedText = URLDecoder.decode(text, "UTF-8");
         }
         catch (UnsupportedEncodingException e) {
-            Log.e("Error", e.getMessage());
+            delegate.gotError(e.getMessage());
         }
         return decodedText;
     }

@@ -2,5 +2,7 @@
     <string name="app_name">Trivia</string>
     <string name="name">Name: %s</string>
     <string name="score">Score: %d</string>
+    <string name="time">%d seconds remaining</string>
+    <string name="difficulty">Difficulty: %s</string>
     <string name="score_end">Your final score is: %d</string>
 </resources>

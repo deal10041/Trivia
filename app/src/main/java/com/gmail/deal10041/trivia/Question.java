@@ -14,6 +14,7 @@ public class Question implements Serializable{
     private ArrayList<String> answers;
     private String correctAnswer;
     private String type;
+    private String difficulty;
 
     public String getQuestion() {
         return question;
@@ -46,4 +47,8 @@ public class Question implements Serializable{
     public void setType(String type) {
         this.type = type;
     }
+
+    public String getDifficulty() { return difficulty; }
+
+    public void setDifficulty(String difficulty) { this.difficulty = difficulty; }
 }

@@ -3,8 +3,10 @@ package com.gmail.deal10041.trivia;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.PorterDuff;
+import android.os.CountDownTimer;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -19,6 +21,7 @@ public class GameActivity extends AppCompatActivity implements TriviaHelper.Call
     private int score;
     private int questions;
     private int MAX_QUESTIONS = 10;
+    private boolean answered;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +37,13 @@ public class GameActivity extends AppCompatActivity implements TriviaHelper.Call
         }
         // if a question is asked before
         else {
+
+            // skip to next question if answered already
+            answered = savedInstanceState.getBoolean("answered");
+            if(answered) {
+                nextQuestion();
+            }
+
             // retrieve question and display it
             question = (Question) savedInstanceState.getSerializable("question");
             score = savedInstanceState.getInt("score");
@@ -51,20 +61,14 @@ public class GameActivity extends AppCompatActivity implements TriviaHelper.Call
         outState.putSerializable("question", question);
         outState.putInt("score", score);
         outState.putInt("questions", questions);
+        outState.putBoolean("answered", answered);
     }
 
     @Override
     public void gotQuestion(Question question) {
 
         this.question = question;
-
-        if(questions > 0) {
-            try {
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
+        answered = false;
 
         // make buttons visible again
         booleanButtons(View.VISIBLE);
@@ -84,41 +88,37 @@ public class GameActivity extends AppCompatActivity implements TriviaHelper.Call
         // make toast
         Context context = getApplicationContext();
         int duration = Toast.LENGTH_LONG;
-        Toast.makeText(context, message, duration).show();
+        Toast.makeText(context, "Something went wrong", duration).show();
+        Log.e("ERROR", message);
     }
 
     public void buttonClicked(View v) {
 
-        questions += 1;
+        if(!(answered)) {
 
-        if(questions < MAX_QUESTIONS) {
-            // check if answer was correct
+            answered = true;
+            questions += 1;
             Button button = (Button) v;
-            if(button.getText().equals(question.getCorrectAnswer())) {
-                score += 1;
+
+            // check if answer was correct
+            if (questions < MAX_QUESTIONS && button.getText().equals(question.getCorrectAnswer())) {
+                score += calculateScore();
             }
 
-            // show correct answer
-            colorButton(button);
-
-            // go to next question
-            new TriviaHelper(this).getNextQuestion(this);
-;
-        }
-        else {
-
-            // launch submit highscore
-            Intent intent = new Intent(GameActivity.this, SubmitActivity.class);
-            intent.putExtra("score", score);
-            startActivity(intent);
+            // color buttons and go to next question
+            colorButton((Button) v);
         }
     }
 
-    public void viewQuestion() {
+    private void viewQuestion() {
 
         // display question
         TextView textView = findViewById(R.id.question);
         textView.setText(question.getQuestion());
+
+        // display difficulty
+        textView = findViewById(R.id.difficulty);
+        textView.setText(getString(R.string.difficulty, question.getDifficulty()));
 
         // set boolean answers
         if(question.getType().equals("boolean")) {
@@ -144,6 +144,8 @@ public class GameActivity extends AppCompatActivity implements TriviaHelper.Call
     }
 
     private void booleanButtons(int state) {
+
+        // switch visibility state last buttons
         Button button = findViewById(buttons[2]);
         button.setVisibility(state);
         button = findViewById(buttons[3]);
@@ -151,14 +153,48 @@ public class GameActivity extends AppCompatActivity implements TriviaHelper.Call
     }
 
     private void colorButton(Button clickedButton) {
+
+        // color clicked button and right answer
         for(int i = 0; i < question.getAnswers().size(); i++) {
             Button button = findViewById(buttons[i]);
             if(button.getText().equals(question.getCorrectAnswer())) {
                 button.getBackground().setColorFilter(0xFF00ff00, PorterDuff.Mode.MULTIPLY);
             }
-            else if(clickedButton.getId() == buttons[i]) {
+            else if(clickedButton != null && clickedButton.getId() == buttons[i]) {
                 button.getBackground().setColorFilter(0xFFff0000, PorterDuff.Mode.MULTIPLY);
             }
         }
+
+        // go to next question after 2 seconds
+        new CountDownTimer(2000,2000) {
+            @Override
+            public void onTick(long l) { }
+
+            @Override
+            public void onFinish() {
+
+                nextQuestion();
+            }
+        }.start();
+    }
+
+    private void nextQuestion() {
+
+        if(questions < MAX_QUESTIONS) {
+            // go to next question
+            new TriviaHelper(this).getNextQuestion(this);
+        }
+        else {
+            // launch submit highscore
+            Intent intent = new Intent(GameActivity.this, SubmitActivity.class);
+            intent.putExtra("score", score);
+            startActivity(intent);
+        }
+    }
+
+    private int calculateScore() {
+        if(question.getDifficulty().equals("hard")) { return 5; }
+        else if(question.getDifficulty().equals("medium")) { return 3; }
+        else { return 1; }
     }
 }

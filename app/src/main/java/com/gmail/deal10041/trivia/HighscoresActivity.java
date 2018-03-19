@@ -19,6 +19,7 @@ public class HighscoresActivity extends AppCompatActivity implements HighscoresH
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_highscores);
 
+        // get highscores
         HighscoresHelper helper = new HighscoresHelper(this);
         helper.getHighscores(this);
     }
@@ -26,6 +27,7 @@ public class HighscoresActivity extends AppCompatActivity implements HighscoresH
     @Override
     public void gotHighscores(ArrayList<Highscore> highscores) {
 
+        // show highscores
         ListView listView = findViewById(R.id.highscores);
         listView.setAdapter(new HighscoresAdapter(this, R.layout.highscore, highscores));
     }
@@ -39,6 +41,6 @@ public class HighscoresActivity extends AppCompatActivity implements HighscoresH
         Toast.makeText(context, text, duration).show();
 
         // log error
-        Log.e("Error", message);
+        Log.e("ERROR", message);
     }
 }

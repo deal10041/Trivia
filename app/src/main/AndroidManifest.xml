@@ -11,15 +11,19 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".GameActivity">
+        <activity android:name=".BeginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".SubmitActivity" />
-        <activity android:name=".HighscoresActivity"></activity>
+        <activity android:name=".SubmitActivity"
+                  android:parentActivityName=".BeginActivity"/>
+        <activity android:name=".HighscoresActivity"
+                  android:parentActivityName=".BeginActivity"/>
+        <activity android:name=".GameActivity"
+                  android:parentActivityName=".BeginActivity"/>
     </application>
 
 </manifest>

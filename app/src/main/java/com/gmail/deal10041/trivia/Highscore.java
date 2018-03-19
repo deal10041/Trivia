@@ -23,6 +23,7 @@ public class Highscore implements Comparable{
     @Override
     public int compareTo(@NonNull Object compareHigh) {
         int compareScore = ((Highscore)compareHigh).getScore();
-        return compareScore - this.score;
+
+        return compareScore - score;
     }
 }
