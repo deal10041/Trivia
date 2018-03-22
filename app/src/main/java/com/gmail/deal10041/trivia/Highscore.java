@@ -10,20 +10,28 @@ import android.support.annotation.NonNull;
 public class Highscore implements Comparable{
 
     private String name;
-    private int score;
+    private long score;
 
     public String getName() { return name; }
 
     public void setName(String name) { this.name = name; }
 
-    public int getScore() { return score; }
+    public long getScore() { return score; }
 
-    public void setScore(int score) { this.score = score; }
+    public void setScore(long score) { this.score = score; }
 
     @Override
     public int compareTo(@NonNull Object compareHigh) {
-        int compareScore = ((Highscore)compareHigh).getScore();
+        long compareScore = ((Highscore)compareHigh).getScore();
 
-        return compareScore - score;
+        if(compareScore > score) {
+            return 1;
+        }
+        else if(compareScore < score) {
+            return -1;
+        }
+        else {
+            return 0;
+        }
     }
 }

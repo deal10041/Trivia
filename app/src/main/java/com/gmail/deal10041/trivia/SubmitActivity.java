@@ -9,7 +9,7 @@ import android.widget.TextView;
 
 public class SubmitActivity extends AppCompatActivity {
 
-    private int score;
+    private long score;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -17,7 +17,7 @@ public class SubmitActivity extends AppCompatActivity {
         setContentView(R.layout.activity_submit);
 
         // get score
-        score = getIntent().getIntExtra("score", 0);
+        score = getIntent().getLongExtra("score", 0);
 
         // fill fields
         TextView textView = findViewById(R.id.result);

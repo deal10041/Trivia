@@ -18,10 +18,12 @@ public class GameActivity extends AppCompatActivity implements TriviaHelper.Call
 
     private Question question = new Question();
     private int[] buttons = {R.id.answer1, R.id.answer2, R.id.answer3, R.id.answer4};
-    private int score;
+    private long score;
     private int questions;
     private int MAX_QUESTIONS = 10;
     private boolean answered;
+    private CountDownTimer timer;
+    private long secondsLeft;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,8 +48,30 @@ public class GameActivity extends AppCompatActivity implements TriviaHelper.Call
 
             // retrieve question and display it
             question = (Question) savedInstanceState.getSerializable("question");
-            score = savedInstanceState.getInt("score");
+            score = savedInstanceState.getLong("score");
             questions = savedInstanceState.getInt("questions");
+            secondsLeft = savedInstanceState.getLong("time");
+
+            // initiate timer
+            final TextView textView = findViewById(R.id.time);
+            timer = new CountDownTimer(secondsLeft * 1000, 1000) {
+                @Override
+                public void onTick(long l) {
+                    // update secondsLeft
+                    secondsLeft = l / 1000 + 1;
+
+                    // update onscreen timer
+                    textView.setText(getString(R.string.time, l / 1000));
+                }
+
+                @Override
+                public void onFinish() {
+                    answered = true;
+                    questions += 1;
+                    textView.setText(getString(R.string.time, 0));
+                    colorButton(null);
+                }
+            }.start();
 
             viewQuestion();
         }
@@ -57,11 +81,15 @@ public class GameActivity extends AppCompatActivity implements TriviaHelper.Call
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
 
+        // stop timer
+        timer.cancel();
+
         // save question
         outState.putSerializable("question", question);
-        outState.putInt("score", score);
+        outState.putLong("score", score);
         outState.putInt("questions", questions);
         outState.putBoolean("answered", answered);
+        outState.putLong("time", secondsLeft);
     }
 
     @Override
@@ -69,6 +97,7 @@ public class GameActivity extends AppCompatActivity implements TriviaHelper.Call
 
         this.question = question;
         answered = false;
+        secondsLeft = 10;
 
         // make buttons visible again
         booleanButtons(View.VISIBLE);
@@ -80,6 +109,27 @@ public class GameActivity extends AppCompatActivity implements TriviaHelper.Call
         }
 
         viewQuestion();
+
+        final TextView textView = findViewById(R.id.time);
+        timer = new CountDownTimer(secondsLeft * 1000, 1000) {
+            @Override
+            public void onTick(long l) {
+                // update secondsLeft
+                secondsLeft = l / 1000 + 1;
+
+                // update onscreen timer
+                textView.setText(getString(R.string.time, l / 1000));
+            }
+
+            @Override
+            public void onFinish() {
+                // show right answer
+                answered = true;
+                questions += 1;
+                textView.setText(getString(R.string.time, 0));
+                colorButton(null);
+            }
+        }.start();
     }
 
     @Override
@@ -93,6 +143,8 @@ public class GameActivity extends AppCompatActivity implements TriviaHelper.Call
     }
 
     public void buttonClicked(View v) {
+
+        timer.cancel();
 
         if(!(answered)) {
 
@@ -166,7 +218,7 @@ public class GameActivity extends AppCompatActivity implements TriviaHelper.Call
         }
 
         // go to next question after 2 seconds
-        new CountDownTimer(2000,2000) {
+        new CountDownTimer(1000,2000) {
             @Override
             public void onTick(long l) { }
 
@@ -192,9 +244,9 @@ public class GameActivity extends AppCompatActivity implements TriviaHelper.Call
         }
     }
 
-    private int calculateScore() {
-        if(question.getDifficulty().equals("hard")) { return 5; }
-        else if(question.getDifficulty().equals("medium")) { return 3; }
-        else { return 1; }
+    private long calculateScore() {
+        if(question.getDifficulty().equals("hard")) { return 5 * secondsLeft; }
+        else if(question.getDifficulty().equals("medium")) { return 3 * secondsLeft; }
+        else { return secondsLeft; }
     }
 }

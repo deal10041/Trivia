@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:layout_margin="16dp"
+    android:background="@color/background"
     android:orientation="vertical"
     tools:context="com.gmail.deal10041.trivia.HighscoresActivity">
 
@@ -12,7 +12,9 @@
         android:id="@+id/title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@color/colorquestion"
         android:gravity="center"
+        android:padding="8dp"
         android:text="Highscores:"
         android:textSize="30sp"
         android:textStyle="bold" />
@@ -20,5 +22,6 @@
     <ListView
         android:id="@+id/highscores"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:layout_margin="16dp" />
 </LinearLayout>

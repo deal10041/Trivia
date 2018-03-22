@@ -4,6 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/background"
     android:orientation="vertical"
     tools:context="com.gmail.deal10041.trivia.BeginActivity">
 
@@ -12,6 +13,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="3"
+        android:background="@color/colorquestion"
         android:gravity="center"
         android:text="Trivia"
         android:textSize="50sp" />
@@ -28,9 +30,10 @@
     <Button
         android:id="@+id/next"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:layout_gravity="center"
         android:layout_weight="1"
+        android:backgroundTint="@color/colorButton"
         android:elevation="0dp"
         android:gravity="center"
         android:onClick="toQuestions"

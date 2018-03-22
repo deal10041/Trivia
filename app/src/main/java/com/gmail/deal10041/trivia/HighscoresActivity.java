@@ -7,9 +7,6 @@ import android.util.Log;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Logger;
-
 import java.util.ArrayList;
 
 public class HighscoresActivity extends AppCompatActivity implements HighscoresHelper.CallBack{
